@@ -159,8 +159,8 @@ func createThread(args *actionsdk.Args) (any, error) {
 
 	name := getThreadName(args)
 
-	// Auto-archive in 3 days
-	dur := 3 * 24 * time.Hour
+	// Auto-archive in 5 days
+	dur := 5 * 24 * time.Hour
 	thread, err := s.ThreadStartComplex(os.Getenv("DISCORD_CHANNEL_ID"), &discordgo.ThreadStart{
 		Name:                name,
 		Type:                discordgo.ChannelTypeGuildPublicThread,
