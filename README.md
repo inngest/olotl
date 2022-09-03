@@ -1,4 +1,4 @@
-# Discord PR managemnt: olotl
+# Discord PR management: olotl
 
 This is an open-source set of functions which deploy to [Inngest](https://inngest.com/),
 allowing you to coordinate pull requests within single-use ephemeral channels in Discord.
@@ -12,6 +12,8 @@ This lets you:
 - Communicate and chat easily on code changes
 - Merge and ship features faster via increased collaboration.
 
+<br />
+
 ## Deploying
 
 To deploy:
@@ -23,15 +25,18 @@ To deploy:
 The functions will be deployed, ready to run from any GitHub event as soon as the events
 are triggered.
 
+<br />
+
 **Configuring Github webhooks**
 
 1. Create a new [Github webhook within Inngest](https://app.inngest.com/sources/new)
 2. Copy the generated URL as a webhook into your target repos.
 
 That's it!  Events from Github will start flowing through to Inngest, automatically triggering
-any functions that respond to those events.
+any functions that respond to those events.  Now in order for our functions to succeed, we need
+to give them auth access to Discord.
 
-Now in order for our functions to succeed, we need to give them auth access to Discord.
+<br />
 
 **Configuring your Discord channels**
 
@@ -51,6 +56,7 @@ You'll need to make your own Discord bot to grant your functions access to your 
 5. Copy the channel ID which will house the threads to Inngest, with the name of `DISCORD_CHANNEL_ID`.
 
 See .env for an example of the secrets to save.
+
 
 ## How it works
 
