@@ -1,0 +1,26 @@
+{
+  "name": "Olotl: PR review events",
+  "id": "suitable-hound-4ce7d5",
+  "triggers": [
+    {
+      "event": "github/pull_request_review",
+      "definition": {
+        "format": "cue",
+        "synced": true,
+        "def": "file://./events/github-pull_request_review.cue"
+      }
+    }
+  ],
+  "steps": {
+    "step-1": {
+      "id": "step-1",
+      "path": "file://./steps/step-1",
+      "name": "Discord PR review",
+      "after": [
+        // Ensure that this runs after the comments have been processed
+        // with a short delay.
+        { "step": "$trigger", "wait": "5s" }
+      ]
+    }
+  }
+}

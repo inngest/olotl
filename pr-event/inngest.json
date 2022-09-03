@@ -1,0 +1,41 @@
+{
+  "name": "Olotl: PR events",
+  "id": "exotic-serval-61e851",
+  "triggers": [
+    {
+      "event": "github/pull_request",
+      "definition": {
+        "format": "cue",
+        "synced": true,
+        "def": "file://./events/github-pull_request.cue"
+      }
+    }
+  ],
+  "steps": {
+    "handle": {
+      "id": "handle",
+      "path": "file://./steps/handle",
+      "name": "New PR"
+    },
+    "reminder": {
+      "id": "reminder",
+      "path": "file://./steps/reminder",
+      "name": "reminder",
+      "after": [
+        {
+          "step": "handle",
+          "async": {
+            // Wait for another `github/pull_request` event (async) which
+            // has the same PR number, is in the same repo and is 'closed'.
+            "event": "github/pull_request",
+            "match": "async.data.number == event.data.number && async.data.pull_request.id == event.data.pull_request.id && async.data.action == 'closed'",
+            // Wait for 3 days.
+            "ttl": "72h",
+            // Only run if this event is not received.
+            "onTimeout": true
+          }
+        }
+      ]
+    }
+  }
+}
