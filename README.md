@@ -74,5 +74,8 @@ This also supports sending reminders when PRs are unmerged within 3 days.  This 
 [event coordination](https://www.inngest.com/docs/functions/step-functions#after-configuration) built
 in to Inngest:
 
-- When a new PR is opened,
+- When a new PR is opened, Inngest runs the `pr-event` function.
+- This waits for 3 days until the PR is closed, by waiting for another `pull_request` event
+- If the event is _not_ received after 3 days, we run the "reminder" step.
+
 
