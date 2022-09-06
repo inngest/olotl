@@ -35,7 +35,10 @@ func main() {
 	var msg string
 	switch review["state"] {
 	case "commented":
-		msg = fmt.Sprintf("💬 review commented by %s", review["user"].(map[string]any)["login"])
+		// We receive separate events for each comment, so we don't need to handle
+		// this particular state.
+		actionsdk.WriteResult(&actionsdk.Result{Status: 200})
+		return
 	case "changes_requested":
 		msg = fmt.Sprintf("🤚 changes requested by %s", review["user"].(map[string]any)["login"])
 	case "approved":
