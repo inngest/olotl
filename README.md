@@ -1,81 +1,34 @@
-# Discord PR management: olotl
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-This is an open-source set of functions which deploy to [Inngest](https://inngest.com/),
-allowing you to coordinate pull requests within single-use ephemeral channels in Discord.
+## Getting Started
 
-Think of this as a free, open-source version of [Axolo](https://axolo.co/) for discord.
+First, run the development server:
 
-This lets you:
+```bash
+npm run dev
+# or
+yarn dev
+```
 
-- Create new temporary threads for each PR
-- Be notified when PRs are reviewed, updated, or switched from draft within Discord
-- Communicate and chat easily on code changes
-- Merge and ship features faster via increased collaboration.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-<br />
+You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 
-## Deploying
+[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
 
-To deploy:
+The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
-1. Install the [Inngest CLI](https://github.com/inngest/inngest)
-2. Clone this repo
-3. Run `inngest deploy --prod .` within the root of this repo.
+## Learn More
 
-The functions will be deployed, ready to run from any GitHub event as soon as the events
-are triggered.
+To learn more about Next.js, take a look at the following resources:
 
-<br />
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-**Configuring Github webhooks**
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-1. Create a new [Github webhook within Inngest](https://app.inngest.com/sources/new)
-2. Copy the generated URL as a webhook into your target repos.
+## Deploy on Vercel
 
-That's it!  Events from Github will start flowing through to Inngest, automatically triggering
-any functions that respond to those events.  Now in order for our functions to succeed, we need
-to give them auth access to Discord.
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-<br />
-
-**Configuring your Discord channels**
-
-You'll need to make your own Discord bot to grant your functions access to your server.
-
-1. Pop on over to [Discord Developers](https://discord.com/developers/applications) and make an app with a bot.
-2. Connect your server via the URL generator with access to:
-  - Manage channels
-  - Send messages
-  - Create public threads
-  - Send mesasges in threads
-  - Manage messages
-  - Manage threads
-  - Mention everyone
-3. Copy the bot token and add it as a secret to Inngest, with the name of `DISCORD_TOKEN`.  Be sure to prefix the bot token with Bot: `Bot your-token`.
-4. Copy your guild ID (server ID) as a secret to Inngest, with the name of `DISCORD_GUILD_ID`. 
-5. Copy the channel ID which will house the threads to Inngest, with the name of `DISCORD_CHANNEL_ID`.
-
-See .env for an example of the secrets to save.
-
-
-## How it works
-
-This repo uses [Inngest](https://www.inngest.com) to receive events from GitHub via webhooks.
-
-The functions in this repo are event-driven:  they declaratively specify the events that
-trigger them within their `inngest.json` files.
-
-Each time Inngest receives an event, it checks which functions should run and automatically
-executes the serverless function.
-
-## PR Reminders
-
-This also supports sending reminders when PRs are unmerged within 3 days.  This uses
-[event coordination](https://www.inngest.com/docs/functions/step-functions#after-configuration) built
-in to Inngest:
-
-- When a new PR is opened, Inngest runs the `pr-event` function.
-- This waits for 3 days until the PR is closed, by waiting for another `pull_request` event
-- If the event is _not_ received after 3 days, we run the "reminder" step.
-
-
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
