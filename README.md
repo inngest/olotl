@@ -1,34 +1,69 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Discord PR management: olotl
 
-## Getting Started
+This is an open-source set of functions built using NextJS and the **[Inngest SDK](https://github.com/inngest/inngest-js)**
+which deploy to [Inngest](https://inngest.com/), allowing you to coordinate pull requests within single-use ephemeral channels in Discord.
 
-First, run the development server:
+Think of this as a free, open-source version of [Axolo](https://axolo.co/) for discord.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+This lets you:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Create new temporary threads for each PR
+- Be notified when PRs are reviewed, updated, or switched from draft within Discord
+- Communicate and chat easily on code changes
+- Merge and ship features faster via increased collaboration.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+<br />
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+## Deploying
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+To deploy:
 
-## Learn More
+1. Clone this repo
+2. Deploy to your provider of choice
+3. [Register your functions with Inngest](https://www.inngest.com/docs/deploy#registering-live-functions-with-inngest)
 
-To learn more about Next.js, take a look at the following resources:
+The functions will be deployed, ready to run from any GitHub event as soon as the events
+are triggered.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+<br />
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+**Configuring Github webhooks**
 
-## Deploy on Vercel
+1. Create a new [Github webhook within Inngest](https://app.inngest.com/sources/new)
+2. Copy the generated URL as a webhook into your target repos.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+That's it!  Events from Github will start flowing through to Inngest, automatically triggering
+any functions that respond to those events.  Now in order for our functions to succeed, we need
+to give them auth access to Discord.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+<br />
+
+**Configuring your Discord channels**
+
+You'll need to make your own Discord bot to grant your functions access to your server.
+
+1. Pop on over to [Discord Developers](https://discord.com/developers/applications) and make an app with a bot.
+2. Connect your server via the URL generator with access to:
+  - Manage channels
+  - Send messages
+  - Create public threads
+  - Send mesasges in threads
+  - Manage messages
+  - Manage threads
+  - Mention everyone
+3. Copy the bot token and add it as a secret to Inngest, with the name of `DISCORD_TOKEN`.  Be sure to prefix the bot token with Bot: `Bot your-token`.
+4. Copy your guild ID (server ID) as a secret to Inngest, with the name of `DISCORD_GUILD_ID`. 
+5. Copy the channel ID which will house the threads to Inngest, with the name of `DISCORD_CHANNEL_ID`.
+
+See .env for an example of the secrets to save.
+
+
+## How it works
+
+This repo uses [Inngest](https://www.inngest.com) to receive events from GitHub via webhooks.
+
+The functions in this repo are event-driven:  they declaratively specify the events that
+trigger them within their `inngest.json` files.
+
+Each time Inngest receives an event, it checks which functions should run and automatically
+executes the serverless function.
