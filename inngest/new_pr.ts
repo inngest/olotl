@@ -9,12 +9,12 @@ import { GithubPullRequest } from "../__generated__/inngest";
 
 // threadPrefix returns a static thread prefix for the PR derived from
 // the event data.
-const threadPrefix = (event: GithubPullRequest): string => {
+export const threadPrefix = (event: GithubPullRequest): string => {
   return `PR ${event.data.pull_request.number}`;
 };
 
 // threadName returns a thread name using the static thread prefix for the PR
-const threadName = (event: GithubPullRequest): string => {
+export const threadName = (event: GithubPullRequest): string => {
   const title = `${threadPrefix(event)} - ${event.data.pull_request.title}`;
   if (event.data.pull_request.draft) {
     return title + " (draft)";

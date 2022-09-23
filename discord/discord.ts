@@ -139,7 +139,7 @@ export const sendMessage = async (
   await client.post(Routes.channelMessages(channelID), { body });
 };
 
-const findThread = async (prefix: string): Promise<Thread | undefined> => {
+export const findThread = async (prefix: string): Promise<Thread | undefined> => {
   const result: ActiveThreadsResult = (await client.get(
     Routes.guildActiveThreads(GUILD_ID)
   )) as ActiveThreadsResult;
