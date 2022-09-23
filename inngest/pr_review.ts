@@ -16,7 +16,7 @@ export const review = createFunction<GithubPullRequestReview>("PR review", "gith
   }
 
   const approved = event.data.review.state === "approved";
-  const user = event.data.pull_request.user.login;
+  const user = event.data.review.user.login;
   const content = approved ? `🤙 review approved by ${user}` : `🤚 changes requested by ${user}`;
   const thread = await findThread(`PR ${event.data.pull_request.number}`);
   await sendMessage(thread.id, { content });
