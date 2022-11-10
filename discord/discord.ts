@@ -6,7 +6,7 @@ const CHANNEL_ID = process.env.DISCORD_CHANNEL_ID || "";
 const GUILD_ID = process.env.DISCORD_GUILD_ID || "";
 
 // REST adds "Bot " for us;  ensure this isn't present by mistake.
-const client = new REST({ version: "10" }).setToken(TOKEN.replace("Bot ", ""));
+export const client = new REST({ version: "10" }).setToken(TOKEN.replace("Bot ", ""));
 
 type CreateThreadArgs = {
   name: string;
@@ -85,19 +85,23 @@ export const findImages = (body: string): Array<string> => {
 
 export const createThread = async ({
   name,
-  pr,
-  user,
-  url,
-  body,
-}: CreateThreadArgs) => {
-  const result = await client.post(Routes.threads(CHANNEL_ID), {
+}: CreateThreadArgs): Promise<{ id: string }> => {
+  return await client.post(Routes.threads(CHANNEL_ID), {
     body: {
       name,
       auto_archive_duration: 10080, // 5 days,
       type: ChannelType.PublicThread,
     },
-  });
+  }) as { id: string };
+};
 
+export const createThreadIntro = async({
+  name,
+  pr,
+  user,
+  url,
+  body,
+}: CreateThreadArgs, threadID: string) => {
   // Create a new message in the thread.
   const content = `${user} created a new PR: #${pr}`;
 
@@ -126,7 +130,7 @@ export const createThread = async ({
     });
   });
 
-  await sendMessage((result as any).id, {
+  await sendMessage(threadID, {
     content: content + ":\n```" + body.substring(0, 1900) + "```",
     embeds: embeds,
   });
