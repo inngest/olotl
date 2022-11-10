@@ -1,9 +1,10 @@
-import { createFunction } from "inngest";
+import { createStepFunction } from "inngest";
 import {
   createThread,
   updateThreadName,
   sendMessage,
   findThread,
+  createThreadIntro,
 } from "../discord/discord";
 import { GithubPullRequest } from "../__generated__/inngest";
 
@@ -25,47 +26,52 @@ export const threadName = (event: GithubPullRequest): string => {
   return title;
 };
 
-export const handlePR = async ({ event }: { event: GithubPullRequest }) => {
-  switch (event.data.action) {
-    case "opened":
-      await createThread({
+
+// On every "github/pull_request" event, run the handlePR function.
+export const newPR = createStepFunction<GithubPullRequest>(
+  "New PR",
+  "github/pull_request",
+  async ({ event, tools }) => {
+    const { action } = event.data;
+
+    if (action === "opened") {
+      const args = {
         name: threadName(event),
         pr: event.data.pull_request.number,
         user: event.data.pull_request.user.login,
         url: event.data.pull_request.html_url,
         body: event.data.pull_request.body,
-      });
-      break;
+      };
 
-    case "closed":
-      // TODO: Send merged message.
+      const thread = tools.run("Create thread", async () => {
+        return await createThread(args);
+      });
+
+      tools.run("Send welcome message", async () => {
+        await createThreadIntro(args, thread.id);
+      });
+    }
+
+    if (action === "closed") {
       const thread = await findThread(threadPrefix(event));
       const content = event.data.pull_request.merged
         ? "This PR has been merged! 🎉"
         : "This PR is closed.";
-      await sendMessage(thread.id, { content });
-      // Update thread name and archived status.
-      await updateThreadName({
-        name: threadName(event),
-        prefix: threadPrefix(event),
-        archived: true,
-      });
-      break;
+        await sendMessage(thread.id, { content });
+        // Update thread name and archived status.
+        await updateThreadName({
+          name: threadName(event),
+          prefix: threadPrefix(event),
+          archived: true,
+        });
+    }
 
-    case "edited":
-    case "converted_to_draft":
-    case "ready_for_review":
+    if (action === "edited" || action === "converted_to_draft" || action === "ready_for_review") {
       // Update the thread name.
       await updateThreadName({
         name: threadName(event),
         prefix: threadPrefix(event),
       });
-  }
-};
-
-// On every "github/pull_request" event, run the handlePR function.
-export const newPR = createFunction<GithubPullRequest>(
-  "New PR",
-  "github/pull_request",
-  handlePR
+    }
+  },
 );
