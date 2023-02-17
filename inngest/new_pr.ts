@@ -1,12 +1,6 @@
-import { createStepFunction } from "inngest";
-import {
-  createThread,
-  updateThreadName,
-  sendMessage,
-  findThread,
-  createThreadIntro,
-} from "../discord/discord";
+import * as discord from "../discord/discord";
 import { GithubPullRequest } from "../__generated__/inngest";
+import { inngest } from "./client";
 
 // threadPrefix returns a static thread prefix for the PR derived from
 // the event data.
@@ -26,12 +20,21 @@ export const threadName = (event: GithubPullRequest): string => {
   return title;
 };
 
-
 // On every "github/pull_request" event, run the handlePR function.
-export const newPR = createStepFunction<GithubPullRequest>(
-  "New PR",
-  "github/pull_request",
-  async ({ event, tools }) => {
+export const newPR = inngest.createFunction(
+  { name: "New PR", fns: { ...discord } },
+  { event: "github/pull_request" },
+  async ({
+    event,
+    step,
+    fns: {
+      createThread,
+      createThreadIntro,
+      findThread,
+      sendMessage,
+      updateThreadName,
+    },
+  }) => {
     const { action } = event.data;
 
     if (action === "opened") {
@@ -43,13 +46,8 @@ export const newPR = createStepFunction<GithubPullRequest>(
         body: event.data.pull_request.body,
       };
 
-      const thread = tools.run("Create thread", async () => {
-        return await createThread(args);
-      });
-
-      tools.run("Send welcome message", async () => {
-        await createThreadIntro(args, thread.id);
-      });
+      const thread = await createThread(args);
+      await createThreadIntro(args, thread.id);
     }
 
     if (action === "closed") {
@@ -57,21 +55,25 @@ export const newPR = createStepFunction<GithubPullRequest>(
       const content = event.data.pull_request.merged
         ? "This PR has been merged! 🎉"
         : "This PR is closed.";
-        await sendMessage(thread.id, { content });
-        // Update thread name and archived status.
-        await updateThreadName({
-          name: threadName(event),
-          prefix: threadPrefix(event),
-          archived: true,
-        });
+      await sendMessage(thread.id, { content });
+      // Update thread name and archived status.
+      await updateThreadName({
+        name: threadName(event),
+        prefix: threadPrefix(event),
+        archived: true,
+      });
     }
 
-    if (action === "edited" || action === "converted_to_draft" || action === "ready_for_review") {
+    if (
+      action === "edited" ||
+      action === "converted_to_draft" ||
+      action === "ready_for_review"
+    ) {
       // Update the thread name.
       await updateThreadName({
         name: threadName(event),
         prefix: threadPrefix(event),
       });
     }
-  },
+  }
 );

@@ -12,7 +12,7 @@
   "dependencies": {
     "@discordjs/rest": "^1.1.0",
     "discord-api-types": "^0.37.10",
-    "inngest": "^0.9.3-beta.1",
+    "inngest": "^1.2.1-signing.2",
     "next": "12.3.1",
     "node-html-markdown": "^1.2.0",
     "react": "18.2.0",
