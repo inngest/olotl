@@ -2208,10 +2208,10 @@ inherits@2, inherits@^2.0.3:
   resolved "https://registry.npmjs.org/inherits/-/inherits-2.0.4.tgz"
   integrity sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==
 
-inngest@^1.2.1-signing.2:
-  version "1.2.1-signing.2"
-  resolved "https://registry.yarnpkg.com/inngest/-/inngest-1.2.1-signing.2.tgz#c5e3b825f22b270d61d95cd9e403a0dc80550748"
-  integrity sha512-tzDrzX5ZbIFaiTuRZd5To2mmeGe3d3keDaJ+lFs28hbmQgxrEcFAWGr6LiZlUYFt2VhP4CB7mgAZlh4oxsOknQ==
+inngest@^1.2.1-signing.3:
+  version "1.2.1-signing.3"
+  resolved "https://registry.yarnpkg.com/inngest/-/inngest-1.2.1-signing.3.tgz#51895a839725168dd9d4670c6a68ee0ef8cf9f3d"
+  integrity sha512-McYMDpxoyUou2yYFfj6c1gpfb6ICh3nyRPNjbJzLorKR0cfl+f/KP7UgXhIsQOYbs6WvrJPreem4pRhqERnJJw==
   dependencies:
     buffer "^6.0.3"
     cross-fetch "^3.1.5"
