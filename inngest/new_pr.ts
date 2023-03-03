@@ -22,11 +22,14 @@ export const threadName = (event: GithubPullRequest): string => {
 
 // On every "github/pull_request" event, run the handlePR function.
 export const newPR = inngest.createFunction(
-  { name: "New PR", fns: { ...discord } },
+  {
+    name: "New PR",
+    concurrency: 5,
+    fns: { ...discord },
+  },
   { event: "github/pull_request" },
   async ({
     event,
-    step,
     fns: {
       createThread,
       createThreadIntro,
