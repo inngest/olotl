@@ -8,9 +8,13 @@ import { review, reviewComment } from "../../inngest/pr_review";
 const api = (req: any, res: any) => {
   const fn = serve(inngest, [newPR, reviewComment, review]);
 
-  console.log(req.headers);
+  console.log("data", req.headers, req.body);
 
-  return fn(req, res);
+  const resp = fn(req, res);
+
+  console.log("resp", resp);
+
+  return resp;
 };
 
 export default api;
