@@ -2226,10 +2226,10 @@ inherits@2, inherits@^2.0.3:
   resolved "https://registry.npmjs.org/inherits/-/inherits-2.0.4.tgz"
   integrity sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==
 
-inngest@^2.4.2-pr-294.43:
-  version "2.4.2-pr-294.43"
-  resolved "https://registry.yarnpkg.com/inngest/-/inngest-2.4.2-pr-294.43.tgz#5749810630b53c892672508ff6843fdd7dd84a5a"
-  integrity sha512-VPs2+30ykeOJ2j2gykWVR49oxS8R5L8o4wNLBjjhJSd8GBdqJiZr5tmhG6+jfz3LN3HvvhUwLMXVhhOtOWPvIA==
+inngest@^2.4.2-pr-294.45:
+  version "2.4.2-pr-294.45"
+  resolved "https://registry.yarnpkg.com/inngest/-/inngest-2.4.2-pr-294.45.tgz#d970128e39a879abd43074af0b86e54be2e9ff6c"
+  integrity sha512-y3w9kwpbZ6/Pzl9i6b4iRQBuLnCj2oxMnENGduBPSo+xguLGUV6rAuOl3dO+wCHOZcHzocTEJVPzRotxoKUNLA==
   dependencies:
     buffer "^6.0.3"
     canonicalize "^1.0.8"
