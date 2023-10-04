@@ -1,22 +1,26 @@
 import { NodeHtmlMarkdown } from "node-html-markdown";
 import * as discord from "../discord/discord";
 import { inngest } from "./client";
+import { slugify } from "inngest";
 
 export const reviewComment = inngest.createFunction(
-  { name: "PR comment", fns: { ...discord } },
+  { 
+    id: slugify("PR comment"),
+    name: "PR comment"
+  },
   { event: "github/pull_request_review_comment" },
-  async ({ event, fns: { findThread, sendMessage } }) => {
+  async ({ event, step }) => {
     const body = NodeHtmlMarkdown.translate(event.data.comment.body);
-    const thread = await findThread(`PR ${event.data.pull_request.number}`);
+    const thread = await step.run("find-thread", async () => await discord.findThread(`PR ${event.data.pull_request.number}`));
     const content = `💬 new comment from ${event.data.comment.user.login}:\n\n${body}`;
-    await sendMessage(thread.id, { content });
+    await step.run("send-comment", async () => await discord.sendMessage(thread.id, { content }));
   }
 );
 
 export const review = inngest.createFunction(
-  { name: "PR review", fns: { ...discord } },
+  { name: "PR review", id: slugify("PR review") },
   { event: "github/pull_request_review" },
-  async ({ event, fns: { findThread, sendMessage } }) => {
+  async ({ event, step }) => {
     if (event.data.review.state === "commented") {
       return;
     }
@@ -26,7 +30,7 @@ export const review = inngest.createFunction(
     const content = approved
       ? `🤙 review approved by ${user}`
       : `🤚 changes requested by ${user}`;
-    const thread = await findThread(`PR ${event.data.pull_request.number}`);
-    await sendMessage(thread.id, { content });
+      const thread = await step.run("find-thread", async () => await discord.findThread(`PR ${event.data.pull_request.number}`));
+    await step.run("send-message", async () => await discord.sendMessage(thread.id, { content }));
   }
 );

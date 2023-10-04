@@ -1,3 +1,4 @@
+import { slugify } from "inngest";
 import * as discord from "../discord/discord";
 import { inngest } from "./client";
 
@@ -22,20 +23,14 @@ export const threadName = (event: any): string => {
 // On every "github/pull_request" event, run the handlePR function.
 export const newPR = inngest.createFunction(
   {
+    id: slugify("New PR"),
     name: "New PR",
     concurrency: 5,
-    fns: { ...discord },
   },
   { event: "github/pull_request" },
   async ({
     event,
-    fns: {
-      createThread,
-      createThreadIntro,
-      findThread,
-      sendMessage,
-      updateThreadName,
-    },
+    step,
   }) => {
     const { action } = event.data;
 
@@ -48,22 +43,22 @@ export const newPR = inngest.createFunction(
         body: event.data.pull_request.body,
       };
 
-      const thread = await createThread(args);
-      await createThreadIntro(args, thread.id);
+      const thread = await step.run("create-thread", async () => await discord.createThread(args));
+      await step.run("create-thread-intro", async () => await discord.createThreadIntro(args, thread.id));
     }
 
     if (action === "closed") {
-      const thread = await findThread(threadPrefix(event));
+      const thread = await step.run("find-thread", async () => await discord.findThread(threadPrefix(event)));
       const content = event.data.pull_request.merged
         ? "This PR has been merged! 🎉"
         : "This PR is closed.";
-      await sendMessage(thread.id, { content });
+      await step.run("create-thread", async () => await discord.sendMessage(thread.id, { content }));
       // Update thread name and archived status.
-      await updateThreadName({
+      await step.run("update-thread-name-closed", async () => await discord.updateThreadName({
         name: threadName(event),
         prefix: threadPrefix(event),
         archived: true,
-      });
+      }));
     }
 
     if (
@@ -72,10 +67,10 @@ export const newPR = inngest.createFunction(
       action === "ready_for_review"
     ) {
       // Update the thread name.
-      await updateThreadName({
+      await step.run("update-thread-name", async () => await discord.updateThreadName({
         name: threadName(event),
         prefix: threadPrefix(event),
-      });
+      }));
     }
   }
 );
