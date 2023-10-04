@@ -6,7 +6,10 @@ import { review, reviewComment } from "../../inngest/pr_review";
 // You must export the serve handler, which hosts all of the provided functions
 // under one API endpoint.
 const api = (req: any, res: any) => {
-  const fn = serve(inngest, [newPR, reviewComment, review]);
+  const fn = serve({
+    client: inngest,
+    functions: [newPR, reviewComment, review],
+  });
 
   console.log("data", req.headers, req.body);
 
