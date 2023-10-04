@@ -45,6 +45,8 @@ export const newPR = inngest.createFunction(
 
       const thread = await step.run("create-thread", async () => await discord.createThread(args));
       await step.run("create-thread-intro", async () => await discord.createThreadIntro(args, thread.id));
+
+      return thread;
     }
 
     if (action === "closed") {
@@ -59,6 +61,7 @@ export const newPR = inngest.createFunction(
         prefix: threadPrefix(event),
         archived: true,
       }));
+      return thread;
     }
 
     if (
