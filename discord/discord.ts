@@ -130,8 +130,13 @@ export const createThreadIntro = async({
     });
   });
 
+  let initialMessage = content;
+  if (body) {
+    initialMessage += ":\n```" + body.substring(0, 1900) + "```";
+  }
+
   await sendMessage(threadID, {
-    content: content + ":\n```" + body.substring(0, 1900) + "```",
+    content: initialMessage,
     embeds: embeds,
   });
 };
