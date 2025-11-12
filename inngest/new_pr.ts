@@ -24,8 +24,8 @@ export const threadName = (event: any): string => {
 export const newPR = inngest.createFunction(
   {
     id: slugify("New PR"),
-    name: "New PR (updated)",
-    concurrency: 1,
+    name: "New PR",
+    concurrency: 3,
   },
   { event: "github/pull_request" },
   async ({
